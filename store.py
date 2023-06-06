@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Tuple, Union
 from products import Product
 
 
@@ -6,77 +6,52 @@ class Store:
     """
     Store class represents a store with a list of products.
     """
-    def __init__(self, products: List[Product]):
+    def __init__(self, products: List[Product] = None):
         """
         Initializes a Store instance with a list of products.
 
         Args:
-            products (List[Product]): The list of products in the store.
+            products (List[Product], optional): The list of products in the store. Defaults to None.
         """
-        self.products = products
+        self._products = products if products else []
 
-    def add_product(self, product: Product):
-        """
-        Adds a product to the store.
+    @property
+    def products(self):
+        return self._products
 
-        Args:
-            product (Product): The product to add to the store.
-        """
-        self.products.append(product)
+    @products.setter
+    def products(self, products):
+        if isinstance(products, list) and all(isinstance(product, Product) for product in products):
+            self._products = products
+        else:
+            raise TypeError("Products should be a list of Product instances")
 
-    def remove_product(self, product: Product):
-        """
-        Removes a product from the store.
+    def __str__(self):
+        return "\n".join(str(product) for product in self._products)
 
-        Args:
-            product (Product): The product to remove from the store.
-        """
-        self.products.remove(product)
+    def __lt__(self, other: 'Store') -> bool:
+        return self.get_total_value() < other.get_total_value()
+
+    def __gt__(self, other: 'Store') -> bool:
+        return self.get_total_value() > other.get_total_value()
+
+    def __contains__(self, product: Product) -> bool:
+        return product in self._products
+
+    def __add__(self, other: 'Store') -> 'Store':
+        return Store(self._products + other.products)
 
     def get_total_quantity(self) -> int:
-        """
-        Returns the total quantity of items in the store.
+        return sum(product.quantity for product in self.products)
 
-        Returns:
-            int: The total quantity of items in the store.
-        """
-        total_quantity = 0
-        for product in self.products:
-            total_quantity += product.get_quantity()
-        return total_quantity
+    def get_total_value(self) -> float:
+        return sum(product.price * product.quantity for product in self.products)
 
-    def get_all_products(self) -> List[Product]:
-        """
-        Returns all active products in the store.
-
-        Returns:
-            List[Product]: A list of all active products in the store.
-        """
-        return [product for product in self.products if product.is_active()]
-
-    def find_product(self, product_name: str):
-        """
-        Finds and returns a product in the store based on its name.
-
-        Args:
-            product_name (str): The name of the product to find.
-
-        Returns:
-            Product or None: The found Product instance or None if not found.
-        """
+    def find_product(self, product_name: str) -> Union[Product, None]:
         for product in self.products:
             if product.name == product_name:
                 return product
         return None
 
-    def order(self, shopping_list: List[tuple]) -> float:
-        """
-        Buys the products in the shopping list and returns the total price of the order.
-
-        Args:
-            shopping_list (List[tuple]): A list of tuples where each tuple contains a Product instance and its quantity.
-
-        Returns:
-            float: The total price of the order.
-        """
+    def order(self, shopping_list: List[Tuple[Product, int]]) -> float:
         return sum(product.buy(quantity) for product, quantity in shopping_list)
