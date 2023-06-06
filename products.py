@@ -24,6 +24,7 @@ class Product:
             self.price = price
             self.quantity = quantity
             self.active_status = True  # changed attribute name to avoid method hiding
+            self.promotion = None  # No promotion at first
         except Exception as e:
             print(f"Error in initializing product: {e}")
             return None
@@ -64,12 +65,27 @@ class Product:
         """
         self.active_status = False
 
+    #  PROMOTION CODE
+    def get_promotion(self):
+        """
+        Getter function for promotion.
+        """
+        return self.promotion
+
+    def set_promotion(self, promotion):
+        """
+        Setter function for promotion.
+        """
+        self.promotion = promotion
+
     def show(self) -> str:
         """
         Returns a string that represents the product, for example:
         "MacBook Air M2, Price: 1450, Quantity: 100"
         """
-        return f"{self.name}, Price: {self.price}, Quantity: {self.quantity}"
+        promotion_text = f", Promotion: {self.promotion.name}" if self.promotion else ""
+        return f"{self.name}, Price: {self.price}, Quantity: {self.quantity}{promotion_text}"
+
 
     def buy(self, quantity) -> float:
         """
@@ -88,7 +104,10 @@ class Product:
             raise Exception("Insufficient quantity")
 
         self.quantity -= quantity
-        return self.price * quantity
+        price = self.price * quantity
+        if self.promotion:
+            price = self.promotion.apply_promotion(self, quantity)
+        return price
 
 class NonStockedProduct(Product):
     """
