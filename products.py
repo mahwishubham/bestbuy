@@ -6,11 +6,12 @@ class Product(ABC):
     """
     Product class represents a product with name, price, quantity, and status.
     """
-    def __init__(self, name, price, quantity):
+    def __init__(self, id, name, price, quantity):
         """
         Initializes a Product instance.
 
         Args:
+            id (str): The id of the product.
             name (str): The name of the product.
             price (float): The price of the product.
             quantity (int): The quantity of the product.
@@ -20,6 +21,7 @@ class Product(ABC):
         if price < 0 or quantity < 0:
             raise ValueError("Price and quantity cannot be negative")
 
+        self._id = id
         self._name = name
         self._price = price
         self._quantity = quantity
@@ -39,6 +41,10 @@ class Product(ABC):
     @property
     def name(self):
         return self._name
+
+    @property
+    def id(self):
+        return self._id
 
     @property
     def price(self):
@@ -95,8 +101,8 @@ class NonStockedProduct(Product):
     """
     NonStockedProduct class represents a non-stocked product which always has zero quantity.
     """
-    def __init__(self, name, price):
-        super().__init__(name, price, quantity=0)
+    def __init__(self, id, name, price):
+        super().__init__(id, name, price, quantity=0)
 
     def __str__(self):
         return super().__str__() + ", Non-stocked product"
@@ -109,8 +115,8 @@ class LimitedProduct(Product):
     """
     LimitedProduct class represents a limited product that can be purchased limited number of times.
     """
-    def __init__(self, name, price, quantity, max_purchase):
-        super().__init__(name, price, quantity)
+    def __init__(self, id, name, price, quantity, max_purchase):
+        super().__init__(id, name, price, quantity)
         self._max_purchase = max_purchase
 
     def __str__(self):
@@ -122,19 +128,3 @@ class LimitedProduct(Product):
         else:
             return super().buy(quantity)
 
-
-if __name__ == '__main__':
-    try:
-        # setup initial stock of inventory
-        mac =  products.Product("MacBook Air M2", price=1450, quantity=100)
-        bose = products.Product("Bose QuietComfort Earbuds", price=250, quantity=500)
-        pixel = products.Product("Google Pixel 7", price=500, quantity=250, maximum=1)
-
-        best_buy = store.Store([mac, bose])
-        mac.price = -100         # Should give error
-        print(mac)               # Should print `MacBook Air M2, Price: $1450 Quantity:100`
-        print(mac > bose)        # Should print True
-        print(mac in best_buy)   # Should print True
-        print(pixel in best_buy) # Should print False
-    except Exception as e:
-        print(f"An error occurred: {e}")

@@ -27,7 +27,11 @@ class Store:
             raise TypeError("Products should be a list of Product instances")
 
     def __str__(self):
-        return "\n".join(str(product) for product in self._products)
+        p = ""
+        for i in range(len(self._products)):
+            product = self._products[i]
+            p += f'{product._id}: {str(product)} \n'
+        return p
 
     def __lt__(self, other: 'Store') -> bool:
         return self.get_total_value() < other.get_total_value()
@@ -35,8 +39,11 @@ class Store:
     def __gt__(self, other: 'Store') -> bool:
         return self.get_total_value() > other.get_total_value()
 
-    def __contains__(self, product: Product) -> bool:
-        return product in self._products
+    def __contains__(self, item) -> bool:
+        for product in self.products:
+            if product.name == item or product.id == item:
+                return True
+        return False
 
     def __add__(self, other: 'Store') -> 'Store':
         return Store(self._products + other.products)
@@ -47,9 +54,9 @@ class Store:
     def get_total_value(self) -> float:
         return sum(product.price * product.quantity for product in self.products)
 
-    def find_product(self, product_name: str) -> Union[Product, None]:
+    def find_product(self, product_name) -> Union[Product, None]:
         for product in self.products:
-            if product.name == product_name:
+            if product_name in [product.name, product.id]:
                 return product
         return None
 

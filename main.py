@@ -37,6 +37,7 @@ def start(store_object):
             print("When you want to finish order, enter empty text.")
             shopping_list = []
             while True:
+
                 product_name = input("Which product do you want? ")
                 if product_name == "":
                     break
@@ -59,15 +60,14 @@ def start(store_object):
 
         elif choice == "4":
             product_name = input("Enter the name of the product to check: ")
-            product = products.Product(product_name, 0, 0)  # dummy product to check
-            if product in store_object:
+            if product_name in store_object:
                 print("The product exists in the store")
             else:
                 print("The product does not exist in the store")
 
         elif choice == "5":
             # for simplicity, let's compare with a dummy store here
-            dummy_store = store.Store([products.Product("dummy", 0, 0)])
+            dummy_store = store.Store([products.Product('1', "dummy", 0, 0)])
             if store_object > dummy_store:
                 print("The store has a higher total value than the dummy store")
             else:
@@ -82,20 +82,20 @@ def start(store_object):
 
 if __name__ == "__main__":
     product_list = [
-        products.Product("MacBook Air M2", price=1450, quantity=100),
-        products.Product("Bose QuietComfort Earbuds", price=250, quantity=500),
-        products.Product("Google Pixel 7", price=500, quantity=250),
-        products.NonStockedProduct("Windows License", price=125),
-        products.LimitedProduct("Shipping", price=10, quantity=250, max_purchase=1)
+        products.Product(id='1', name="MacBook Air M2", price=1450, quantity=100),
+        products.Product(id='2', name="Bose QuietComfort Earbuds", price=250, quantity=500),
+        products.Product(id='3', name="Google Pixel 7", price=500, quantity=250),
+        products.NonStockedProduct(id='4', name="Windows License", price=125),
+        products.LimitedProduct(id='5', name="Shipping", price=10, quantity=250, max_purchase=1)
     ]
 
-    second_half_price = promotions.SecondHalfPricePromotion()
-    third_one_free = promotions.BuyTwoGetOneFreePromotion()
-    thirty_percent = promotions.PercentageDiscountPromotion(percent=30)
+    second_half_price = promotions.SecondHalfPricePromotion("second half price")
+    third_one_free = promotions.BuyTwoGetOneFreePromotion("Buy 2 Get 1 Free")
+    thirty_percent = promotions.PercentageDiscountPromotion("30% Discount", 30)
 
-    product_list[0].set_promotion(second_half_price)
-    product_list[1].set_promotion(third_one_free)
-    product_list[3].set_promotion(thirty_percent)
+    product_list[0].promotion = second_half_price
+    product_list[1].promotion = third_one_free
+    product_list[3].promotion = thirty_percent
 
     best_buy = store.Store(product_list)
     start(best_buy)
