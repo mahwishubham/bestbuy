@@ -14,15 +14,20 @@ class Product:
         Raises:
             ValueError: If name is empty or if price or quantity is negative.
         """
-        if not name:
-            raise ValueError("Name cannot be empty")
-        if price < 0 or quantity < 0:
-            raise ValueError("Price and quantity cannot be negative")
+        try:
+            if not name:
+                raise ValueError("Name cannot be empty")
+            if price < 0 or quantity < 0:
+                raise ValueError("Price and quantity cannot be negative")
 
-        self.name = name
-        self.price = price
-        self.quantity = quantity
-        self.active_status = True  # changed attribute name to avoid method hiding
+            self.name = name
+            self.price = price
+            self.quantity = quantity
+            self.active_status = True  # changed attribute name to avoid method hiding
+        except Exception as e:
+            print(f"Error in initializing product: {e}")
+            return None
+
 
     def get_quantity(self) -> float:
         """
@@ -87,15 +92,18 @@ class Product:
 
 
 if __name__ == '__main__':
-    bose = Product("Bose QuietComfort Earbuds", price=250, quantity=500)
-    mac = Product("MacBook Air M2", price=1450, quantity=100)
+    try:
+        bose = Product("Bose QuietComfort Earbuds", price=250, quantity=500)
+        mac = Product("MacBook Air M2", price=1450, quantity=100)
 
-    print(bose.buy(50))
-    print(mac.buy(100))
-    print(mac.is_active())
+        print(bose.buy(50))
+        print(mac.buy(100))
+        print(mac.is_active())
 
-    print(bose.show())
-    print(mac.show())
+        print(bose.show())
+        print(mac.show())
 
-    bose.set_quantity(1000)
-    print(bose.show())
+        bose.set_quantity(1000)
+        print(bose.show())
+    except Exception as e:
+        print(f"An error occurred: {e}")
