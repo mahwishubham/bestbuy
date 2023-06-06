@@ -90,6 +90,66 @@ class Product:
         self.quantity -= quantity
         return self.price * quantity
 
+class NonStockedProduct(Product):
+    """
+    NonStockedProduct class represents a non-stocked product which always has zero quantity.
+    """
+    def __init__(self, name, price):
+        """
+        Initializes a NonStockedProduct instance.
+        The quantity is always zero.
+        """
+        super().__init__(name, price, quantity=0)
+
+    def set_quantity(self, quantity):
+        """
+        Overrides the setter function for quantity.
+        For NonStockedProduct, quantity is always zero and cannot be changed.
+        """
+        raise NotImplementedError("Quantity cannot be changed for NonStockedProduct")
+
+    def buy(self, quantity=1):
+        """
+        Overrides the buy function. Always available to buy.
+        """
+        return self.price * quantity
+
+    def show(self):
+        """
+        Overrides the show function to show the special characteristics of NonStockedProduct.
+        """
+        return f"{self.name}, Price: {self.price}, Non-stocked product"
+
+class LimitedProduct(Product):
+    """
+    LimitedProduct class represents a limited product that can be purchased limited number of times.
+    """
+    def __init__(self, name, price, quantity, max_purchase):
+        """
+        Initializes a LimitedProduct instance.
+
+        Args:
+            max_purchase (int): The maximum quantity that can be purchased at a time.
+        """
+        super().__init__(name, price, quantity)
+        self.max_purchase = max_purchase
+
+    def buy(self, quantity):
+        """
+        Overrides the buy function.
+        The quantity to be purchased cannot exceed max_purchase.
+        """
+        if quantity > self.max_purchase:
+            raise Exception(f"Cannot purchase more than {self.max_purchase} at a time")
+        else:
+            return super().buy(quantity)
+
+    def show(self):
+        """
+        Overrides the show function to show the special characteristics of LimitedProduct.
+        """
+        return f"{self.name}, Price: {self.price}, Quantity: {self.quantity}, Max purchase: {self.max_purchase}"
+
 
 if __name__ == '__main__':
     try:

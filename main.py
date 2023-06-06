@@ -66,11 +66,11 @@ def start(store_object):
 
 
 # setup initial stock of inventory
-product_list = [
-    store.Product("MacBook Air M2", price=1450, quantity=100),
-    store.Product("Bose QuietComfort Earbuds", price=250, quantity=500),
-    store.Product("Google Pixel 7", price=500, quantity=250)
-]
-
+product_list = [ products.Product("MacBook Air M2", price=1450, quantity=100),
+                 products.Product("Bose QuietComfort Earbuds", price=250, quantity=500),
+                 products.Product("Google Pixel 7", price=500, quantity=250),
+                 products.NonStockedProduct("Windows License", price=125),
+                 products.LimitedProduct("Shipping", price=10, quantity=250, maximum=1)
+               ]
 best_buy = store.Store(product_list)
 start(best_buy)
