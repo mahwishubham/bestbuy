@@ -1,3 +1,5 @@
+from promotions import Promotion, PercentageDiscountPromotion, SecondHalfPricePromotion, BuyTwoGetOneFreePromotion
+
 class Product:
     """
     Product class represents a product with name, price, quantity, and status.
