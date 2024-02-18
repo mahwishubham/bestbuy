@@ -1,3 +1,6 @@
+"""
+Promotions.py
+"""
 from abc import ABC, abstractmethod
 
 
